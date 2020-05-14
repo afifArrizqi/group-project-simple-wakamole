@@ -5,7 +5,7 @@
     </nav>
     <div class="container">
       <div class="row justify-content-md-center">
-          <div class="col-md-auto" v-if="!user.isSignIn">
+          <div class="col-md-auto" v-if="!this.$store.state.user.isSignIn">
             Welcome, welcome! Input your name to enter lobby.
             <form  @submit.prevent="signIn">
               <div class="input-group flex-nowrap">
@@ -13,15 +13,15 @@
                   <span class="input-group-text" id="addon-wrapping">@</span>
                 </div>
                 <input type="text" class="form-control" placeholder="Username"
-                  v-model="user.username"
+                  v-model="username"
                   aria-label="Username" aria-describedby="addon-wrapping"
                 >
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
             </form>
           </div>
-          <div class="col-md-auto" v-if="user.isSignIn">
-            Welcome, {{user.username}}!
+          <div class="col-md-auto" v-if="this.$store.state.user.isSignIn">
+            Welcome, {{username}}!
             <h1>Untuk sementara bisa liat position yg di random kalau click Start</h1>
             <div class="card  mb-5" style="width: 18rem;">
               <div class="card-header">
@@ -29,7 +29,7 @@
               </div>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item"
-                  v-for="(guest, index) in guestList" :key="index"
+                  v-for="(guest, index) in this.$store.state.guestList" :key="index"
                 >
                   {{guest}}
                 </li>
@@ -41,22 +41,27 @@
               </div>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item"
-                  v-for="(user, index) in gameRoom.users" :key="index"
+                  v-for="(user, index) in this.$store.state.gameRoom.users" :key="index"
                 >
                   {{user}}
                 </li>
                 <li class="list-group-item"
-                  v-if="!gameRoom.users.length"
+                  v-if="!this.$store.state.gameRoom.users.length"
                 >
                   Room is empty.
                 </li>
               </ul>
-              <div v-if="user.room === 'lobby' && gameRoom.users.length < 2" class="btn btn-primary"
+              <div
+                v-if="this.$store.state.user.room === 'lobby'
+                  && this.$store.state.gameRoom.users.length < 5"
+                class="btn btn-primary"
                 @click.prevent="joinRoom"
               >
                 Join
               </div>
-              <div v-if="user.roomMaster" class="btn btn-primary"
+              <div v-if="this.$store.state.user.roomMaster &&
+                this.$store.state.user.room !== 'lobby'"
+                class="btn btn-primary"
                 @click.prevent="gameStart"
               >
                 Start Playing
@@ -86,6 +91,7 @@ export default {
   name: 'app',
   data() {
     return {
+      username: '',
       user: {
         username: '',
         room: 'lobby',
@@ -102,14 +108,12 @@ export default {
   },
   methods: {
     signIn() {
-      socket.emit('user sign-in', this.user.username);
-      this.user.isSignIn = true;
-      this.guestList.push(this.user.username);
+      socket.emit('user sign-in', this.username);
+      this.$store.dispatch('userSignIn', this.username);
     },
     joinRoom() {
-      this.gameRoom.users.push(this.user.username);
-      this.user.room = this.gameRoom.name;
-      if (this.gameRoom.users.length === 1) this.users.roomMaster = true;
+      this.$store.dispatch('addUserToRoom', this.username);
+      socket.emit('user join room', this.username);
     },
     panggil() {
       socket.emit('dari client', 'hello');
@@ -129,6 +133,14 @@ export default {
     this.$store.dispatch('randomData');
     socket.on('game started', (rand) => {
       this.data = rand;
+    });
+
+    socket.on('user sign-in', (users) => {
+      this.$store.dispatch('patchGuestList', users);
+    });
+
+    socket.on('user join room', (users) => {
+      this.$store.dispatch('patchGameRoomUsers', users);
     });
   },
 };
