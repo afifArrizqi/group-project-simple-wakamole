@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div class="btn btn-primary" @click="gameStart">Start</div>
+    <h1>Untuk sementara bisa liat position yg di random kalau click Start</h1>
     <div class="container">
       <div class="row">
         <div class="col-2 bg-info"
