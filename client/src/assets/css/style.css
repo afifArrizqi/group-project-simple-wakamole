@@ -1,0 +1,162 @@
+h1 {
+  font-size: 60px;
+  text-align: center;
+  font-family: arial;
+  margin: 10px;
+}
+
+#tombolMulai {
+  /* font-size: 60px; */
+  text-align: center;
+  font-family: arial;
+  /* margin: 10px; */
+}
+
+.skor {
+  margin-left: 27%;
+  font-size: 20px;
+  text-align: right;
+  font-family: 'PT Mono';
+}
+
+.space1 {
+  margin-left: 26%;
+  font-size: 20px;
+  text-align: center;
+  font-family: 'PT Mono';
+}
+
+.space2 {
+  margin-left: 23%;
+  font-size: 20px;
+  text-align: center;
+  font-family: 'PT Mono';
+  display: none;
+}
+
+.nama {
+  margin-left: 50px;
+  font-size: 20px;
+  text-align: left;
+  font-family: 'PT Mono';
+}
+
+body {
+  background-color: #ff9900;
+  height: 800px;
+}
+
+.myButton {
+  margin-top: 15px;
+  box-shadow: inset 3px 0px 14px -3px #f2fadc;
+  background: linear-gradient(to bottom, #dbe6c4 5%, #9ba892 100%);
+  background-color: #dbe6c4;
+  border-radius: 6px;
+  border: 1px solid #b2b8ad;
+  display: inline-block;
+  cursor: pointer;
+  color: #757d6f;
+  font-family: Arial;
+  font-size: 23px;
+  font-weight: bold;
+  padding: 15px 57px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #ced9bf;
+}
+
+.myButton:hover {
+  background: linear-gradient(to bottom, #9ba892 5%, #dbe6c4 100%);
+  background-color: #9ba892;
+}
+
+.myButton:active {
+  position: relative;
+  top: 1px;
+}
+
+.container {
+  width: 640px;
+  margin: auto;
+  /* border: 1px solid black; */
+  cursor: url(../img/suntik1.png), auto;
+}
+
+.container:active {
+  cursor: url(../img/suntik2.png), auto;
+}
+
+.tanah {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  float: left;
+}
+
+.tanah::after {
+  content: '';
+  display: block;
+  width: 220px;
+  height: 120px;
+  background: url(../img/tanah.png) bottom center no-repeat;
+  background-size: 80%;
+  position: absolute;
+  bottom: -25px;
+}
+
+.tikus {
+  width: 100%;
+  height: 100%;
+  background: url(../img/virus.png) bottom center no-repeat;
+  background-size: 60%;
+  position: absolute;
+  top: 100px;
+  transition: top 0.3s;
+}
+
+.tanah.muncul .tikus {
+  top: -15px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 150px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(212, 39, 39);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  font-size: 20px;
+  text-align: center;
+  font-family: 'PT Mono';
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%;
+  height: 60%;
+}
+
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+
