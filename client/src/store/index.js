@@ -16,14 +16,15 @@ export default new Vuex.Store({
       name: 'room 1',
       users: [],
     },
-    guestList: [],
+    guestList: {},
   },
   mutations: {
     randomData(state, payload) {
       state.data = payload;
     },
-    userSignIn(state) {
+    userSignIn(state, payload) {
       state.user.isSignIn = true;
+      state.user.username = payload;
     },
     patchGuestList(state, users) {
       state.guestList = users;
@@ -31,19 +32,22 @@ export default new Vuex.Store({
     patchGameRoomUsers(state, users) {
       state.gameRoom.users = users;
       // cadangan
-      if (state.gameRoom.users.length === 1) state.user.roomMaster = true;
+      console.log(state.user.username);
+      if (state.gameRoom.users[0] === state.user.username) state.user.roomMaster = true;
     },
     addUserToRoom(state, username) {
+      console.log('addTOUserRoom');
       state.gameRoom.users.push(username);
       state.user.room = state.gameRoom.name;
+      console.log(state.gameRoom.users);
     },
   },
   actions: {
     randomData(context, payload) {
       context.commit('randomData', payload);
     },
-    userSignIn(context) {
-      context.commit('userSignIn');
+    userSignIn(context, payload) {
+      context.commit('userSignIn', payload);
     },
     patchGuestList(context, users) {
       context.commit('patchGuestList', users);

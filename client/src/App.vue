@@ -22,7 +22,6 @@
           </div>
           <div class="col-md-auto" v-if="this.$store.state.user.isSignIn">
             Welcome, {{username}}!
-            <h1>Untuk sementara bisa liat position yg di random kalau click Start</h1>
             <div class="card  mb-5" style="width: 18rem;">
               <div class="card-header">
                 Lobby
@@ -120,7 +119,7 @@ export default {
       this.$store.dispatch('randomData');
     },
     gameStart() {
-      if (this.gameRoom.users.length < 2) {
+      if (this.$store.state.gameRoom.users.length < 2) {
         // popup user kurang, tunggu pemain lain.
       } else {
         socket.emit('game start', 'afif');
@@ -132,11 +131,14 @@ export default {
   created() {
     this.$store.dispatch('randomData');
     socket.on('game started', (rand) => {
-      this.data = rand;
+      this.$store.dispatch('randomData', rand);
+      console.log(rand);
     });
 
     socket.on('user sign-in', (users) => {
-      this.$store.dispatch('patchGuestList', users);
+      this.$store.dispatch('patchGuestList', users.users);
+      console.log(users);
+      this.$store.dispatch('patchGameRoomUsers', users.usersInRoom);
     });
 
     socket.on('user join room', (users) => {
