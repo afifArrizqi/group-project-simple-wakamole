@@ -3,7 +3,7 @@
     <nav class="navbar navbar-light bg-light">
       <span class="navbar-brand mb-0 h1">Mole Gimang</span>
     </nav>
-    <div class="container">
+    <div class="container" v-if="!this.$store.state.isStart">
       <div class="row justify-content-md-center">
           <div class="col-md-auto" v-if="!this.$store.state.user.isSignIn">
             Welcome, welcome! Input your name to enter lobby.
@@ -78,47 +78,48 @@
       </div>
     </div>
   <!-- game -->
-  <div>
+  <div v-if="this.$store.state.isStart">
       <h1 class="text-center">Smash a Corona</h1>
+      <p class="lead text-center">{{ winorloose }}</p>
       <p class="lead text-center">Score: {{ this.$store.state.user.score }}</p>
       <div class="container">
         <div v-if="this.isMuncul[0].isMuncul" class="tanah muncul"
-          @click="clickTikus(this.isMuncul[0].isMuncul)">
+          @click="clickTikus(0)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
         <div v-if="this.isMuncul[1].isMuncul" class="tanah muncul"
-          @click="clickTikus(this.isMuncul[1].isMuncul)">
+          @click="clickTikus(1)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
         <div v-if="this.isMuncul[2].isMuncul" class="tanah muncul"
-          @click="clickTikus(this.isMuncul[2].isMuncul)">
+          @click="clickTikus(2)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
         <div v-if="this.isMuncul[3].isMuncul" class="tanah muncul"
-          @click="clickTikus(this.isMuncul[3].isMuncul)">
+          @click="clickTikus(3)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
         <div v-if="this.isMuncul[4].isMuncul" class="tanah muncul"
-          @click="clickTikus(this.isMuncul[4].isMuncul)">
+          @click="clickTikus(4)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
         <div v-if="this.isMuncul[5].isMuncul" class="tanah muncul"
-          @click="clickTikus(this.isMuncul[5].isMuncul)">
+          @click="clickTikus(5)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
@@ -152,6 +153,8 @@ export default {
       },
       guestList: [],
       data: [],
+      winorloose: '',
+      lokasiMole: null,
       isMulai: false,
       isSelesai: false,
       isMuncul: [
@@ -199,6 +202,7 @@ export default {
     munculkanTikus(st) {
       this.isMulai = true;
       let tRandom = this.$store.state.data[st];
+      this.lokasiMole = tRandom;
       // let tRandom = Math.floor(Math.random() * 6);
       const wRandom = this.randomWaktu(400, 500);
       // console.log(this.isMuncul[tRandom].isMuncul);
@@ -224,10 +228,12 @@ export default {
       setTimeout(() => {
         this.isSelesai = true;
         this.isMulai = false;
+        this.lokasiMole = null;
+        socket.emit('game finish', this.$store.state.user);
       }, 30000); //  ini durasi permainan, satuan ms
     },
     clickTikus(adaTikus) {
-      if (adaTikus) {
+      if (adaTikus === this.lokasiMole) {
         this.$store.dispatch('addScore');
       }
     },
@@ -235,10 +241,11 @@ export default {
   watch: {
   },
   created() {
-    this.$store.dispatch('randomData');
+    // this.$store.dispatch('randomData');
     socket.on('game started', (rand) => {
       this.$store.dispatch('randomData', rand);
       this.mulai();
+      this.$store.dispatch('isStart');
     });
 
     socket.on('user sign-in', (users) => {
@@ -248,6 +255,14 @@ export default {
 
     socket.on('user join room', (users) => {
       this.$store.dispatch('patchGameRoomUsers', users);
+    });
+
+    socket.on('winner', (winner) => {
+      if (winner === this.$store.state.user.username) {
+        this.winorloose = 'You Win!';
+      } else {
+        this.winorloose = 'You Loose';
+      }
     });
   },
 };

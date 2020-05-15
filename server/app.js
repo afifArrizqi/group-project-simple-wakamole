@@ -2,13 +2,13 @@ const express     = require('express');
 const app         = express();
 const http        = require('http').createServer(app);
 const io          = require('socket.io')(http);
-const position    = [];
-const roomList    = [];
-const playerList  = {};
+let position      = [];
+let roomList      = [];
+let playerList    = {};
 
 io.on('connection', (socket) => {
   socket.on('user sign-in', (username) => {
-    playerList[socket.id] = username;
+    playerList[username] = username;
     socket.emit('user sign-in',  { usersInRoom: roomList, users: playerList });
     socket.broadcast.emit('user sign-in', { usersInRoom: roomList, users: playerList });
   });
@@ -24,6 +24,26 @@ io.on('connection', (socket) => {
     socket.emit('game started', position);
     socket.broadcast.emit('game started', position);
   });
+
+  socket.on('game finish', (user) => {
+    console.log(user);
+    playerList[user.username] = user;
+    let winner = '';
+    let winnerScore = 0;
+    for (let player in playerList) {
+      console.log(playerList[player]);
+      if (playerList[player].score > winnerScore) {
+        winnerScore = playerList[player].score;
+        winner = playerList[player].username;
+      }
+    }
+    socket.emit('winner', winner);
+    setTimeout(() => {
+      position      = [];
+      roomList      = [];
+      playerList    = {};
+    }, 1000);
+  })
 });
 
 function randomData() {

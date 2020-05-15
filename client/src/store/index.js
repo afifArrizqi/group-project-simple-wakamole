@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     data: [],
+    isStart: false,
     user: {
       username: '',
       room: 'lobby',
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     guestList: {},
   },
   mutations: {
+    isStart(state) {
+      state.isStart = true;
+    },
     randomData(state, payload) {
       state.data = payload;
     },
@@ -47,6 +51,9 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    isStart(context) {
+      context.commit('isStart');
+    },
     randomData(context, payload) {
       context.commit('randomData', payload);
     },
