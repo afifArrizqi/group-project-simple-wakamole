@@ -24,7 +24,7 @@ export default new Vuex.Store({
     },
     userSignIn(state, payload) {
       state.user.isSignIn = true;
-      state.username = payload;
+      state.user.username = payload;
     },
     patchGuestList(state, users) {
       state.guestList = users;
@@ -32,6 +32,7 @@ export default new Vuex.Store({
     patchGameRoomUsers(state, users) {
       state.gameRoom.users = users;
       // cadangan
+      console.log(state.user.username);
       if (state.gameRoom.users[0] === state.user.username) state.user.roomMaster = true;
     },
     addUserToRoom(state, username) {
