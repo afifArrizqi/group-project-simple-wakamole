@@ -80,45 +80,45 @@
   <!-- game -->
   <div>
       <h1 class="text-center">Smash a Corona</h1>
-      <h1>
-        <a v-if="!isMulai" class="text-center">
-          <button id="tombolMulai"
-          type="button" class="btn btn-primary hvr-pulse-shrink" @click="mulai">Start Game
-          </button>
-        </a>
-      </h1>
+      <p class="lead text-center">Score: {{ this.$store.state.user.score }}</p>
       <div class="container">
-        <div v-if="this.isMuncul[0].isMuncul" class="tanah muncul">
+        <div v-if="this.isMuncul[0].isMuncul" class="tanah muncul"
+          @click="clickTikus(this.isMuncul[0].isMuncul)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
-        <div v-if="this.isMuncul[1].isMuncul" class="tanah muncul">
+        <div v-if="this.isMuncul[1].isMuncul" class="tanah muncul"
+          @click="clickTikus(this.isMuncul[1].isMuncul)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
-        <div v-if="this.isMuncul[2].isMuncul" class="tanah muncul">
+        <div v-if="this.isMuncul[2].isMuncul" class="tanah muncul"
+          @click="clickTikus(this.isMuncul[2].isMuncul)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
-        <div v-if="this.isMuncul[3].isMuncul" class="tanah muncul">
+        <div v-if="this.isMuncul[3].isMuncul" class="tanah muncul"
+          @click="clickTikus(this.isMuncul[3].isMuncul)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
-        <div v-if="this.isMuncul[4].isMuncul" class="tanah muncul">
+        <div v-if="this.isMuncul[4].isMuncul" class="tanah muncul"
+          @click="clickTikus(this.isMuncul[4].isMuncul)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
           <div class="tikus"></div>
         </div>
-        <div v-if="this.isMuncul[5].isMuncul" class="tanah muncul">
+        <div v-if="this.isMuncul[5].isMuncul" class="tanah muncul"
+          @click="clickTikus(this.isMuncul[5].isMuncul)">
           <div class="tikus"></div>
         </div>
         <div v-else class="tanah">
@@ -196,11 +196,12 @@ export default {
         socket.emit('game start', 'afif');
       }
     },
-    munculkanTikus() {
+    munculkanTikus(st) {
       this.isMulai = true;
-      let tRandom = Math.floor(Math.random() * 6);
+      let tRandom = this.$store.state.data[st];
+      // let tRandom = Math.floor(Math.random() * 6);
       const wRandom = this.randomWaktu(400, 500);
-      console.log(this.isMuncul[tRandom].isMuncul);
+      // console.log(this.isMuncul[tRandom].isMuncul);
       if (tRandom === 6) {
         tRandom -= 1;
       } else {
@@ -208,7 +209,8 @@ export default {
         setTimeout(() => {
           this.isMuncul[tRandom].isMuncul = false;
           if (!this.isSelesai) {
-            this.munculkanTikus();
+            const a = st + 1;
+            this.munculkanTikus(a);
           }
         }, wRandom);
       }
@@ -217,11 +219,17 @@ export default {
       return Math.round(Math.random() * (max - min) + min);
     },
     mulai() {
-      this.munculkanTikus();
+      const st = 0;
+      this.munculkanTikus(st);
       setTimeout(() => {
         this.isSelesai = true;
         this.isMulai = false;
       }, 30000); //  ini durasi permainan, satuan ms
+    },
+    clickTikus(adaTikus) {
+      if (adaTikus) {
+        this.$store.dispatch('addScore');
+      }
     },
   },
   watch: {
@@ -230,21 +238,17 @@ export default {
     this.$store.dispatch('randomData');
     socket.on('game started', (rand) => {
       this.$store.dispatch('randomData', rand);
-      console.log(rand);
+      this.mulai();
     });
 
     socket.on('user sign-in', (users) => {
       this.$store.dispatch('patchGuestList', users.users);
-      console.log(users);
       this.$store.dispatch('patchGameRoomUsers', users.usersInRoom);
     });
 
     socket.on('user join room', (users) => {
       this.$store.dispatch('patchGameRoomUsers', users);
     });
-    if (this.isMunculkanTikus) {
-      console.log(this.tanah);
-    }
   },
 };
 </script>

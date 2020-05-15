@@ -27,8 +27,8 @@ io.on('connection', (socket) => {
 });
 
 function randomData() {
-  for(let i = 0; i < 10; i++){
-    const newPos = Math.floor(Math.random() * 5);
+  for(let i = 0; i < 100; i++){
+    const newPos = Math.floor(Math.random() * 6);
     position.push(newPos);
   }
 }

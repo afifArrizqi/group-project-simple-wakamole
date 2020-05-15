@@ -11,6 +11,7 @@ export default new Vuex.Store({
       room: 'lobby',
       isSignIn: false,
       roomMaster: false,
+      score: 0,
     },
     gameRoom: {
       name: 'room 1',
@@ -41,6 +42,9 @@ export default new Vuex.Store({
       state.user.room = state.gameRoom.name;
       console.log(state.gameRoom.users);
     },
+    addScore(state) {
+      state.user.score += 1;
+    },
   },
   actions: {
     randomData(context, payload) {
@@ -57,6 +61,9 @@ export default new Vuex.Store({
     },
     addUserToRoom(context, username) {
       context.commit('addUserToRoom', username);
+    },
+    addScore(context) {
+      context.commit('addScore');
     },
   },
   modules: {
