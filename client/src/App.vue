@@ -16,7 +16,7 @@
       <h1>
         <a v-if="!isMulai" class="text-center">
           <button id="tombolMulai"
-          type="button" class="btn btn-primary hvr-pulse-shrink" @click="munculkanTikus">Start Game
+          type="button" class="btn btn-primary hvr-pulse-shrink" @click="mulai">Start Game
           </button>
         </a>
       </h1>
@@ -74,6 +74,7 @@ export default {
     return {
       data: [],
       isMulai: false,
+      isSelesai: false,
       isMuncul: [
         {
           isMuncul: false,
@@ -115,12 +116,21 @@ export default {
         this.isMuncul[tRandom].isMuncul = true;
         setTimeout(() => {
           this.isMuncul[tRandom].isMuncul = false;
-          this.munculkanTikus();
+          if (!this.isSelesai) {
+            this.munculkanTikus();
+          }
         }, wRandom);
       }
     },
     randomWaktu(min, max) {
       return Math.round(Math.random() * (max - min) + min);
+    },
+    mulai() {
+      this.munculkanTikus();
+      setTimeout(() => {
+        this.isSelesai = true;
+        this.isMulai = false;
+      }, 30000); //  ini durasi permainan, satuan ms
     },
   },
   watch: {
